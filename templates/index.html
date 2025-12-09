@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HSRM - HOPE Smart Recruitment Messenger</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%235AAFE0' rx='15' width='100' height='100'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'>H</text></svg>">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Crimson+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container"></div>
+    
+    <!-- Confetti Container -->
+    <div class="confetti-container" id="confetti-container"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <a href="https://www.hopetutoring.org/" target="_blank" rel="noopener" class="logo-link">
+                <img src="{{ url_for('static', filename='images/hope-logo.png') }}" alt="HOPE Tutoring Logo" class="logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="logo-fallback" style="display: none;">
+                    <span class="logo-text">HOPE</span>
+                    <span class="logo-subtext">Tutoring</span>
+                </div>
+            </a>
+            <div class="header-title">
+                <h1>HOPE Smart Recruitment Messenger <span class="app-acronym">(HSRM)</span></h1>
+                <p class="tagline">Personalized Volunteer Outreach — Made Simple</p>
+                <p class="credit">Built with ❤️ by UTA Students • 2025</p>
+            </div>
+            <div class="header-actions">
+                <button class="header-icon-btn" id="help-btn-header" data-tooltip="Quick Help">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </button>
+                <button class="theme-toggle" id="theme-toggle" data-tooltip="Toggle Dark Mode">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
+                <a href="https://www.hopetutoring.org/" target="_blank" rel="noopener" class="visit-site-btn">
+                    Visit HOPE Tutoring
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Logo Section -->
+        <div class="hero-logo-section">
+            <img src="{{ url_for('static', filename='images/hope-logo.png') }}" alt="HOPE Tutoring Center" class="hero-logo" onerror="this.style.display='none';">
+            <p class="hero-tagline">Empowering students through education in Arlington, TX</p>
+        </div>
+
+        <!-- Persistent Tracking Bar - Always Visible -->
+        <div class="tracking-bar" id="tracking-bar">
+            <div class="tracking-bar-stats">
+                <span class="tracking-bar-label">📊 Tracking:</span>
+                <span class="tracking-bar-stat">
+                    <span class="stat-dot stat-dot-pending"></span>
+                    <span id="bar-pending">0</span> Pending
+                </span>
+                <span class="tracking-bar-stat">
+                    <span class="stat-dot stat-dot-responded"></span>
+                    <span id="bar-responded">0</span> Responded
+                </span>
+                <span class="tracking-bar-stat">
+                    <span class="stat-dot stat-dot-signed"></span>
+                    <span id="bar-signed">0</span> Signed Up
+                </span>
+                <span class="tracking-bar-stat">
+                    <span class="stat-dot stat-dot-declined"></span>
+                    <span id="bar-declined">0</span> Declined
+                </span>
+            </div>
+            <div class="tracking-bar-actions">
+                <span class="tracking-bar-total" id="tracking-total">0 total contacts</span>
+                <button class="tracking-bar-btn" id="view-dashboard" data-tooltip="View analytics dashboard">📈 Dashboard</button>
+                <button class="tracking-bar-btn" id="view-tracking" data-tooltip="View all contacts">View All</button>
+            </div>
+        </div>
+
+        <!-- Step Indicators -->
+        <div class="steps-indicator">
+            <div class="step active" data-step="1">
+                <span class="step-number">1</span>
+                <span class="step-label">Upload</span>
+                <span class="step-hint">Import contacts</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step" data-step="2">
+                <span class="step-number">2</span>
+                <span class="step-label">Customize</span>
+                <span class="step-hint">Pick template</span>
+            </div>
+            <div class="step-connector"></div>
+            <div class="step" data-step="3">
+                <span class="step-number">3</span>
+                <span class="step-label">Export</span>
+                <span class="step-hint">Download emails</span>
+            </div>
+        </div>
+
+        <!-- Step 1: Upload Section -->
+        <section id="step-1" class="section upload-section active">
+            <span class="section-hint">📁 Import</span>
+            <h2>Upload Volunteer Data</h2>
+            <p class="section-description">
+                Drop your file here — we'll find names, emails, and details automatically.
+            </p>
+            
+            <div class="upload-zone" id="upload-zone">
+                <div class="upload-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <p class="upload-text">Drag & drop your file here</p>
+                <p class="upload-subtext">or click to browse</p>
+                <div class="file-types">
+                    <span class="file-type" data-tooltip="Comma-separated values spreadsheet">CSV</span>
+                    <span class="file-type" data-tooltip="Microsoft Word document">DOCX</span>
+                    <span class="file-type" data-tooltip="PDF document with tables or text">PDF</span>
+                </div>
+                <input type="file" id="file-input" accept=".csv,.docx,.pdf" hidden>
+                
+                <!-- File Preview (shown after selection) -->
+                <div class="upload-file-preview" id="file-preview" style="display: none;">
+                    <div class="file-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                    </div>
+                    <div class="file-info">
+                        <div class="file-name" id="preview-file-name">filename.csv</div>
+                        <div class="file-size" id="preview-file-size">0 KB</div>
+                    </div>
+                    <button class="remove-file" id="remove-file" data-tooltip="Remove file">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Format Guidelines -->
+                <div class="format-guidelines">
+                    <button class="format-guidelines-toggle" id="format-toggle">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        Format Guidelines & Examples
+                    </button>
+                    <div class="format-guidelines-content" id="format-content">
+                        <h4>📋 CSV Format</h4>
+                        <ul>
+                            <li>Headers: First Name, Last Name, Email Address, Phone Number</li>
+                            <li>One volunteer per row</li>
+                            <li>Email address is required for each contact</li>
+                        </ul>
+                        <h4>📝 Word/PDF Documents</h4>
+                        <ul>
+                            <li>Tables with headers work best</li>
+                            <li>Can also extract from plain text with email addresses</li>
+                            <li>Names near emails will be associated automatically</li>
+                        </ul>
+                        <div class="sample-download">
+                            <a href="/download/sample" class="sample-download-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                </svg>
+                                Download Sample CSV
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="upload-status" id="upload-status" style="display: none;">
+                <div class="status-content">
+                    <div class="spinner"></div>
+                    <span class="status-text">Processing file...</span>
+                </div>
+            </div>
+
+            <div class="error-message" id="error-message" style="display: none;"></div>
+            
+            <!-- Validation Warnings (shown after parsing) -->
+            <div class="validation-warnings" id="validation-warnings" style="display: none;">
+                <h4>⚠️ Data Warnings</h4>
+                <ul id="validation-list"></ul>
+            </div>
+        </section>
+
+        <!-- Step 2: Preview & Template Selection -->
+        <section id="step-2" class="section template-section" style="display: none;">
+            <span class="section-hint">✏️ Customize</span>
+            <h2>Review Data & Choose Template</h2>
+            
+            <!-- Data Preview -->
+            <div class="data-preview">
+                <div class="preview-header">
+                    <h3>Extracted Volunteers</h3>
+                    <div class="preview-header-right">
+                        <span class="volunteer-count" id="volunteer-count">0 volunteers found</span>
+                        <span class="duplicate-count" id="duplicate-count" style="display: none;"></span>
+                    </div>
+                </div>
+                <p class="preview-hint" style="font-size: 0.9rem; color: var(--gray-600); margin-bottom: 1rem;">
+                    💡 <strong>Tip:</strong> Click any cell to edit. Duplicates are highlighted in yellow.
+                </p>
+                <div class="preview-table-wrapper">
+                    <table class="preview-table" id="preview-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Interests</th>
+                                <th>Location</th>
+                                <th style="width: 50px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preview-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Template Selection with Categories -->
+            <div class="template-selection">
+                <h3>Select Email Template</h3>
+                
+                <!-- Category Tabs -->
+                <div class="category-tabs" id="category-tabs">
+                    <button class="category-tab active" data-category="initial">📨 Initial Outreach</button>
+                    <button class="category-tab" data-category="followup">🔄 Follow-Up</button>
+                    <button class="category-tab" data-category="seasonal">🎉 Seasonal</button>
+                </div>
+                
+                <div class="templates-grid" id="templates-grid">
+                    {% for template in templates %}
+                    <div class="template-card" data-template-id="{{ template.id }}" data-category="{{ template.category }}">
+                        <div class="template-header">
+                            <h4>{{ template.name }}</h4>
+                            <span class="template-check">✓</span>
+                        </div>
+                        <p class="template-description">{{ template.description }}</p>
+                        <div class="template-preview-thumb">{{ template.body[:120] }}...</div>
+                        <div class="template-card-actions">
+                            <button class="preview-template-btn" data-template-id="{{ template.id }}">👁️ Preview</button>
+                            <button class="use-template-btn" data-template-id="{{ template.id }}">✓ Use</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Custom Template Option -->
+            <div class="custom-template">
+                <button class="toggle-custom-btn" id="toggle-custom" data-tooltip="Create your own email content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9"></path>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                    </svg>
+                    Customize Template
+                </button>
+                <div class="custom-fields" id="custom-fields" style="display: none;">
+                    <div class="field-group field-with-counter">
+                        <label for="custom-subject">Custom Subject Line</label>
+                        <input type="text" id="custom-subject" placeholder="Leave empty to use template default" maxlength="150">
+                        <span class="char-counter" id="subject-counter">0/150</span>
+                    </div>
+                    <div class="field-group field-with-counter">
+                        <label for="custom-body">Custom Email Body</label>
+                        <textarea id="custom-body" rows="10" placeholder="Leave empty to use template default. Use {first_name}, {name}, {interests}, {location} for personalization." maxlength="5000"></textarea>
+                        <span class="char-counter" id="body-counter">0/5000</span>
+                    </div>
+                    <p class="merge-fields-hint">
+                        <strong>Available merge fields:</strong> 
+                        <code>{first_name}</code>, <code>{name}</code>, <code>{email}</code>, <code>{interests}</code>, <code>{location}</code>
+                    </p>
+                </div>
+            </div>
+
+            <div class="section-actions">
+                <button class="btn btn-secondary" id="back-to-upload">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" id="generate-btn">
+                    Generate Emails →
+                </button>
+            </div>
+        </section>
+
+        <!-- Step 3: Results Section -->
+        <section id="step-3" class="section results-section" style="display: none;">
+            <span class="section-hint">📤 Export</span>
+            <h2>Generated Emails</h2>
+            
+            <div class="results-header">
+                <span class="email-count" id="email-count">0 emails generated</span>
+                <div class="download-buttons">
+                    <button class="btn btn-download" id="download-csv" data-tooltip="Download all emails as spreadsheet">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download CSV
+                    </button>
+                    <button class="btn btn-download" id="download-zip" data-tooltip="Download individual email files">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download ZIP
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search and Sort Bar -->
+            <div class="search-filter-bar">
+                <div class="search-input-wrapper">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" class="search-input" id="email-search" placeholder="Search by name or email...">
+                </div>
+                <select class="sort-select" id="email-sort">
+                    <option value="name-asc">Name (A-Z)</option>
+                    <option value="name-desc">Name (Z-A)</option>
+                    <option value="email-asc">Email (A-Z)</option>
+                    <option value="status">Status</option>
+                </select>
+            </div>
+
+            <div class="emails-list" id="emails-list">
+                <!-- Generated emails will be inserted here -->
+            </div>
+            
+            <!-- Empty State -->
+            <div class="empty-state" id="no-results-state" style="display: none;">
+                <div class="empty-state-icon">🔍</div>
+                <div class="empty-state-title">No emails found</div>
+                <div class="empty-state-text">Try adjusting your search terms</div>
+            </div>
+
+            <div class="section-actions">
+                <button class="btn btn-secondary" id="back-to-template">
+                    ← Back
+                </button>
+                <button class="btn btn-primary" id="start-over">
+                    Start New Batch
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Template Preview Modal -->
+    <div class="modal" id="template-modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Template Preview</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="preview-subject">
+                    <strong>Subject:</strong>
+                    <span id="preview-subject-text"></span>
+                </div>
+                <div class="preview-body" id="preview-body-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Modal -->
+    <div class="modal" id="tracking-modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>📊 All Tracked Contacts</h3>
+                <button class="modal-close" id="tracking-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Batch Filters -->
+                <div class="batch-filter-section">
+                    <h4>📁 Filter by Upload Batch</h4>
+                    <div class="batch-filters" id="batch-filters">
+                        <!-- Batch buttons will be inserted here -->
+                    </div>
+                </div>
+                
+                <!-- Status Filters -->
+                <div class="status-filter-section">
+                    <h4>📋 Filter by Status</h4>
+                    <div class="tracking-filters">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="pending">⏳ Pending</button>
+                        <button class="filter-btn" data-filter="responded">💬 Responded</button>
+                        <button class="filter-btn" data-filter="signed">✅ Signed Up</button>
+                        <button class="filter-btn" data-filter="declined">❌ Declined</button>
+                    </div>
+                </div>
+                
+                <div class="tracking-list" id="tracking-list">
+                    <!-- Tracked contacts will be inserted here -->
+                </div>
+                <div class="tracking-modal-actions">
+                    <button class="btn btn-secondary" id="export-tracking">Export Tracking Data</button>
+                    <button class="btn btn-secondary" id="clear-tracking">Clear All Tracking Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Modal -->
+    <div class="modal" id="dashboard-modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>📈 Analytics Dashboard</h3>
+                <button class="modal-close" id="dashboard-modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="dashboard-stats" id="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="stat-total">0</div>
+                        <div class="stat-card-label">Total Contacts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="stat-response-rate">0%</div>
+                        <div class="stat-card-label">Response Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="stat-conversion">0%</div>
+                        <div class="stat-card-label">Conversion Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="stat-signed">0</div>
+                        <div class="stat-card-label">Signed Up</div>
+                    </div>
+                </div>
+                <div class="dashboard-charts">
+                    <div class="chart-card">
+                        <h3>📊 Response Distribution</h3>
+                        <div class="chart-container" id="pie-chart-container">
+                            <!-- Pie chart will be rendered here -->
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>📈 Conversion Funnel</h3>
+                        <div class="chart-container">
+                            <div class="funnel-chart" id="funnel-chart">
+                                <!-- Funnel will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Help Modal -->
+    <div class="modal" id="help-modal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>❓ Quick Help</h3>
+                <button class="modal-close" id="help-modal-close">&times;</button>
+            </div>
+            <div class="modal-body help-content">
+                <h4>🚀 Getting Started</h4>
+                <ul>
+                    <li>Upload a CSV, Word, or PDF file with volunteer contacts</li>
+                    <li>The system automatically extracts names, emails, and other details</li>
+                    <li>Choose a template or create your own custom message</li>
+                    <li>Generate personalized emails and download them</li>
+                </ul>
+                
+                <h4>📝 Editing Data</h4>
+                <ul>
+                    <li>Click any cell in the preview table to edit it directly</li>
+                    <li>Duplicate emails are highlighted in yellow</li>
+                    <li>Missing required fields show warnings</li>
+                </ul>
+                
+                <h4>📧 Templates</h4>
+                <ul>
+                    <li><strong>Initial Outreach:</strong> First contact with potential volunteers</li>
+                    <li><strong>Follow-Up:</strong> For contacts who haven't responded</li>
+                    <li><strong>Seasonal:</strong> Holiday and event-themed messages</li>
+                </ul>
+                
+                <h4>📊 Tracking</h4>
+                <ul>
+                    <li>Track responses: Pending, Responded, Signed Up, Declined</li>
+                    <li>View analytics in the Dashboard</li>
+                    <li>Data is saved locally in your browser</li>
+                </ul>
+                
+                <h4>⌨️ Keyboard Shortcuts</h4>
+                <ul>
+                    <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> — Generate emails</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>S</kbd> — Download CSV</li>
+                    <li><kbd>Esc</kbd> — Close modals</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            Built for <a href="https://www.hopetutoring.org/" target="_blank" rel="noopener">HOPE Tutoring Center</a> — 
+            Empowering students through education in Arlington, TX
+        </p>
+        <p class="contact-info">
+            📧 admin@hopetutoring.org &nbsp;|&nbsp; 📞 817-860-7757
+        </p>
+        <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">
+            HSRM v2.0 • Your data is stored locally and encrypted
+        </p>
+    </footer>
+
+    <!-- Store templates data for JS -->
+    <script>
+        window.TEMPLATES = {{ templates | tojson | safe }};
+        window.CATEGORIES = {{ categories | tojson | safe }};
+    </script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
